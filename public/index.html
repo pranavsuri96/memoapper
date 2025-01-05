@@ -5,6 +5,92 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Collaborative Notes App</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    /* Add a unique font for the instructions */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    /* Styling for the instruction button */
+    #instruction-button {
+      display: block;
+      margin: 30px auto; /* Centers the button horizontally */
+      background-color: #FF5733;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
+      border-radius: 8px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    #instruction-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0px 0px 15px rgba(255, 87, 51, 0.7);
+    }
+
+    /* Styling for the instruction modal */
+    #instruction-modal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;  /* Ensure the width is properly sized */
+      max-width: 450px;  /* Limit the maximum width */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      font-family: 'Press Start 2P', cursive;
+      animation: fadeIn 1s;
+    }
+
+    /* Fade-in effect for the modal */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Styling for the instructions text */
+    .instruction-text {
+      font-size: 16px;
+      line-height: 1.4;  /* Set line height to keep each instruction on a single line */
+      color: #333;
+      margin-bottom: 20px;
+      padding-left: 20px;  /* Add padding for indentation */
+    }
+
+    /* Styling for each instruction point */
+    .instruction-text ol {
+      padding-left: 0;  /* Remove padding on the left of the list */
+      margin-left: 0;   /* Remove default margin */
+      list-style-position: inside;  /* Ensure the numbers stay inside the background */
+    }
+
+    .instruction-text li {
+      margin-bottom: 10px; /* Space between each instruction */
+      overflow-wrap: break-word;  /* Ensure text wraps in case of long text */
+    }
+
+    .instruction-close {
+      margin-top: 15px;
+      display: block;
+      text-align: center;
+      background-color: #FF5733;
+      color: white;
+      padding: 8px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .instruction-close:hover {
+      background-color: #FF4500;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -22,12 +108,40 @@
         <button id="copy-link">Copy</button>
       </div>
     </div>
+
+    <!-- Instruction Button -->
+    <button id="instruction-button">Instructions</button>
+
+    <!-- Instruction Modal -->
+    <div id="instruction-modal">
+      <div class="instruction-text">
+        <ol>
+          <li>Add your notes in the text box and click SAVE NOTE to save it.</li>
+          <li>You will receive a link upon saving the notes.</li>
+          <li>Click the COPY button to get the link.</li>
+          <li>Paste/Share the link with your folks so they may also add into your ideas.</li>
+          <li>Keep the generated link handy as it is curated JUST FOR YOU.</li>
+        </ol>
+      </div>
+      <button class="instruction-close" id="close-instructions">Close</button>
+    </div>
   </main>
   <footer>
     <p>&copy; 2025 Collaborative Notes App</p>
   </footer>
   <script src="client.js"></script>
   <script>
+    // Instruction button logic
+    document.getElementById('instruction-button').addEventListener('click', () => {
+      document.getElementById('instruction-modal').style.display = 'block';
+    });
+
+    // Close the instruction modal
+    document.getElementById('close-instructions').addEventListener('click', () => {
+      document.getElementById('instruction-modal').style.display = 'none';
+    });
+
+    // Copy link functionality
     document.getElementById('copy-link').addEventListener('click', () => {
       const shareLink = document.getElementById('share-link');
       shareLink.select();

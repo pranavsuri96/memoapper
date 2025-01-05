@@ -9,7 +9,7 @@ const app = express();
 // Enable CORS
 const corsOptions = {
   origin: '*', // Allow all origins (you can restrict this in production)
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 app.use(cors(corsOptions));
@@ -46,8 +46,19 @@ const Note = mongoose.model('Note', noteSchema);
 app.post('/save-note', async (req, res) => {
   const { noteId, content } = req.body;
 
-  if (!noteId || !content) {
-    return res.status(400).json({ success: false, message: 'noteId and content are required' });
+  if (!noteId) {
+    return res.status(400).json({ success: false, message: 'noteId is required' });
+  }
+
+  if (!content.trim()) {
+    // If content is empty or only whitespace, delete the note entry if it exists
+    try {
+      await Note.findOneAndDelete({ noteId });  // Delete the note if content is empty
+      return res.status(200).json({ success: true, message: 'Note deleted due to empty content' });
+    } catch (error) {
+      console.error('Error deleting note:', error);
+      return res.status(500).json({ success: false, message: 'Internal server error' });
+    }
   }
 
   try {
@@ -70,6 +81,24 @@ app.post('/save-note', async (req, res) => {
     res.status(200).json({ success: true, noteId: note.noteId, url: noteUrl });
   } catch (error) {
     console.error('Error saving note:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+// Route to delete a note by noteId
+app.delete('/delete-note/:noteId', async (req, res) => {
+  const { noteId } = req.params;
+
+  try {
+    const note = await Note.findOneAndDelete({ noteId });
+    
+    if (!note) {
+      return res.status(404).json({ success: false, message: 'Note not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Note deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting note:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
