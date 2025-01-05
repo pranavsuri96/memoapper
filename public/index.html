@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Notes App</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <h1>Collaborative Notes App</h1>
+  </header>
+  <main>
+    <div id="note-creation">
+      <textarea id="note-content" placeholder="Write your note here..."></textarea>
+      <button id="save-note">Save Note</button>
+    </div>
+    <div id="note-link" class="hidden">
+      <p>Share this link to collaborate:</p>
+      <div class="link-container">
+        <input type="text" id="share-link" readonly>
+        <button id="copy-link">Copy</button>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Collaborative Notes App</p>
+  </footer>
+  <script src="client.js"></script>
+  <script>
+    document.getElementById('copy-link').addEventListener('click', () => {
+      const shareLink = document.getElementById('share-link');
+      shareLink.select();
+      shareLink.setSelectionRange(0, 99999); // For mobile devices
+
+      navigator.clipboard.writeText(shareLink.value).then(() => {
+        alert('Link copied to clipboard!');
+      }).catch(err => {
+        alert('Failed to copy link: ', err);
+      });
+    });
+  </script>
+</body>
+</html>

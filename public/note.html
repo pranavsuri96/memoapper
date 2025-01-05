@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collaborative Notes App</title>
+  <link rel="stylesheet" href="/style.css"> <!-- Use absolute path -->
+</head>
+<body>
+  <header>
+    <h1>Collaborative Notes App</h1>
+  </header>
+  <main>
+    <div id="note-display">
+      <textarea id="note-content" placeholder="Loading note..."></textarea>
+      <button id="save-note">Save Note</button>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Collaborative Notes App</p>
+  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const noteId = window.location.pathname.split('/').pop();
+      if (noteId) {
+        try {
+          const response = await fetch(`/api/get-note/${noteId}`);
+          const result = await response.json();
+          if (result.success) {
+            document.getElementById('note-content').value = result.content;
+          } else {
+            document.getElementById('note-content').placeholder = 'Note not found';
+          }
+        } catch (error) {
+          document.getElementById('note-content').placeholder = 'Error loading note';
+        }
+      }
+
+      document.getElementById('save-note').addEventListener('click', async () => {
+        const content = document.getElementById('note-content').value;
+        try {
+          const response = await fetch('/save-note', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ noteId, content }),
+          });
+          const result = await response.json();
+          if (result.success) {
+            alert('Note updated successfully!');
+          } else {
+            alert('Error updating note');
+          }
+        } catch (error) {
+          alert('Error updating note');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
