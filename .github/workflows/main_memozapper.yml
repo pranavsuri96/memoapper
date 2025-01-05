@@ -59,4 +59,4 @@ jobs:
           app-name: 'memozapper'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_4343F92A685E4B8BB529433E5EE9A3C4 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_77645D5148D845E09E7A46FDEBE2AE3E }}
