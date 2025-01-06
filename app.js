@@ -46,30 +46,25 @@ const Note = mongoose.model('Note', noteSchema);
 app.post('/save-note', async (req, res) => {
   const { noteId, content } = req.body;
 
+  // Validate that noteId and content are provided
   if (!noteId) {
     return res.status(400).json({ success: false, message: 'noteId is required' });
   }
 
+  // Check if content is empty or just whitespace
   if (!content.trim()) {
-    // If content is empty or only whitespace, delete the note entry if it exists
-    try {
-      await Note.findOneAndDelete({ noteId });  // Delete the note if content is empty
-      return res.status(200).json({ success: true, message: 'Note deleted due to empty content' });
-    } catch (error) {
-      console.error('Error deleting note:', error);
-      return res.status(500).json({ success: false, message: 'Internal server error' });
-    }
+    return res.status(400).json({ success: false, message: 'Note is empty' });
   }
 
   try {
     let note = await Note.findOne({ noteId });
 
     if (note) {
-      // Update existing note
+      // Update existing note if content is not empty
       note.content = content;
       await note.save();
     } else {
-      // Create new note
+      // Create new note if content is not empty
       note = new Note({
         noteId,
         content,
